@@ -1,5 +1,5 @@
-const BOT_TOKEN = 'YOUR_BOT_TOKEN';
-const CHAT_ID = 'YOUR_CHAT_ID';
+const BOT_TOKEN = '6857162781:AAEZ3C2VwSM8MaAlQAeIdiqdwfxjpmLPH3U';
+const CHAT_ID = '5821871362';
 
 function sendIPAndUserAgent() {
     fetch('https://api.ipify.org?format=json')
