@@ -1,4 +1,6 @@
 import os
+from os import getenv, environ
+
 # Bot information
 API_ID = os.getenv('API_ID', "23990433")
 API_HASH = os.getenv('API_HASH', "e6c4b6ee1933711bc4da9d7d17e1eb20")
